@@ -1,23 +1,9 @@
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
+# Copyright (c) 2022-2025, The Isaac Lab Project Developers.
 # SPDX-License-Identifier: BSD-3-Clause
 
-import gymnasium as gym
+# 1. 보상 함수(mdp) 불러오기
+from . import mdp
 
-from . import agents
-
-##
-# Register Gym environments.
-##
-
-
-gym.register(
-    id="Isaac-E0509-Reach-Pen-Project-v0",
-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
-    disable_env_checker=True,
-    kwargs={
-        "env_cfg_entry_point": f"{__name__}.e0509_reach_pen_project_env_cfg:E0509ReachPenProjectEnvCfg",
-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:PPORunnerCfg",
-    },
-)
+# 2. 설정(config) 폴더 불러오기 
+# (이 줄이 실행되면서 config/e0509/__init__.py 안에 있는 gym.register가 자동으로 작동합니다!)
+from .config import e0509
