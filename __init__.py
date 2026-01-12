@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 # 1. 보상 함수(mdp) 불러오기
+import gymnasium as gym
 from . import mdp
 
 # 2. 설정(config) 폴더 불러오기 
