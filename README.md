@@ -12,6 +12,14 @@
 
     ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-E0509-Reach-Pen --max_iterations=10000 --headless
 
+<!-- 학습 이어서
+
+     ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-E0509-Reach-Pen --max_iterations=5000 --headless --resume --num_envs=2048 -->
+
 <!-- 학습 이어서 -->
 
-     ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-E0509-Reach-Pen --max_iterations=5000 --headless --resume --num_envs=2048
+    ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
+    --task="Isaac-E0509-Reach-Pen-v0" \
+    --num_envs=2048 \
+    --max_iterations=5000 \
+    --headless
