@@ -39,10 +39,9 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
             actuators={
                 "arm": ImplicitActuatorCfg(
                     joint_names_expr=[".*"],
-                    # ✅ [수정] 경고 로그 해결 (_sim 붙이기)
-                    velocity_limit_sim=2.0, 
-                    effort_limit_sim=87.0,
-                    stiffness=800.0,
+                    # 1. Stiffness (P-Gain): 로봇을 지탱하는 힘
+                    # 1은 너무 낮고, 800은 너무 높으니 '400'부터 시작해 봅니다.
+                    stiffness=400.0,
                     damping=40.0,
                 ),
             },
@@ -57,11 +56,11 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
             spawn=sim_utils.UsdFileCfg(
                 # ✅ [수정] 옮기신 펜 파일 경로
                 usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/usd/pen.usd",
-                scale=(1.0, 1.0, 1.0),
+                scale=(0.001, 0.001, 0.001),
                 # 혹시 펜 USD에 물리 설정이 안 되어 있을 경우를 대비해 강제 적용
                 rigid_props=sim_utils.RigidBodyPropertiesCfg(
                     rigid_body_enabled=True,
-                    disable_gravity=False,
+                    disable_gravity=True,
                 ),
                 mass_props=sim_utils.MassPropertiesCfg(mass=0.05),
             ),

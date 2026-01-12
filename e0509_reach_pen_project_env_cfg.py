@@ -35,7 +35,8 @@ class ReachPenSceneCfg(InteractiveSceneCfg):
         prim_path="{ENV_REGEX_NS}/Pen",
         spawn=sim_utils.UsdFileCfg(
             usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/pen.usd", 
-            scale=(1.0, 1.0, 1.0),
+            # scale=(1.0, 1.0, 1.0),
+            scale=(0.001, 0.001, 0.001),
             
             # ✅ [추가 1] 강제로 물리 속성(Rigid Body) 켜기
             # 이걸 넣으면 USD 파일에 설정이 없어도 강제로 적용됩니다.
