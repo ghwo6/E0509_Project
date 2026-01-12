@@ -6,23 +6,25 @@ import gymnasium as gym
 from .config import e0509
 
 # v0 등록 (기초 훈련용)
-gym.register(
-    id="Isaac-E0509-Reach-Pen-v0",
-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
-    disable_env_checker=True,
-    kwargs={
-        "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_v0,
-        "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
-    },
-)
+if "Isaac-E0509-Reach-Pen-v0" not in gym.envs.registry:
+    gym.register(
+        id="Isaac-E0509-Reach-Pen-v0",
+        entry_point="isaaclab.envs:ManagerBasedRLEnv",
+        disable_env_checker=True,
+        kwargs={
+            "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_v0,
+            "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
+        },
+    )
 
 # v1 등록 (Precision Mode)
-gym.register(
-    id="Isaac-E0509-Reach-Pen-v1",
-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
-    disable_env_checker=True,
-    kwargs={
-        "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_v1,
-        "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
-    },
-)
+if "Isaac-E0509-Reach-Pen-v1" not in gym.envs.registry:
+    gym.register(
+        id="Isaac-E0509-Reach-Pen-v1",
+        entry_point="isaaclab.envs:ManagerBasedRLEnv",
+        disable_env_checker=True,
+        kwargs={
+            "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_v1,
+            "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
+        },
+    )
