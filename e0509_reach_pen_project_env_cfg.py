@@ -115,6 +115,19 @@ class EventCfg:
 
 @configclass
 class RewardsCfg:
+
+    # 1. Action Rate Penalty: 이전 스텝과 현재 스텝의 액션 차이가 크면 벌점 (급격한 움직임 방지)
+    action_rate = RewTerm(
+        func=mdp.action_rate_l2, 
+        weight=-0.01  # 헤드뱅잉이 심하면 이 값을 -0.05 정도로 높이세요.
+    )
+
+    # 2. Joint Velocity Penalty: 관절 속도가 너무 빠르면 벌점
+    joint_vel = RewTerm(
+        func=mdp.joint_vel_l2, 
+        weight=-0.0001 # 관절이 너무 휘둘리는 것을 억제합니다.
+    )   
+    
     # 1. 거리 보상 (가까우면 점수)
     reaching_distance = RewTerm(
         func=local_mdp.object_ee_distance,
