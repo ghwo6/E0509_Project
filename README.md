@@ -6,7 +6,8 @@
 
 <!-- 도커안에서 실행 -->
 
-    ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-E0509-Reach-Pen --num_envs=1
+    <!-- ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-E0509-Reach-Pen --num_envs=1 -->
+    ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task="Isaac-E0509-Reach-Pen-v0" --num_envs=1 --headless
 
 <!-- RL -->
 

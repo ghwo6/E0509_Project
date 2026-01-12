@@ -4,7 +4,7 @@
 # 1. 보상 함수(mdp) 불러오기
 import gymnasium as gym
 from . import mdp
-
+from .config.e0509 import agents
 # 2. 설정(config) 폴더 불러오기 
 # (이 줄이 실행되면서 config/e0509/__init__.py 안에 있는 gym.register가 자동으로 작동합니다!)
 from .config import e0509
