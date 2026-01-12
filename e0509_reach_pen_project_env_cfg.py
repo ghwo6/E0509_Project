@@ -68,11 +68,10 @@ class ObservationsCfg:
         
         # 3. 펜의 위치 (로봇 기준)
         object_position = ObsTerm(
-            # ✅ mdp.object_pos_rel 대신 local_mdp의 함수를 사용하거나 
-            # ✅ 만약 상대 위치 함수를 따로 안 만드셨다면, 일단 아래처럼 수정하세요.
-            func=local_mdp.ee_position, 
+            func=local_mdp.object_pos_rel, 
             params={
-                "robot_cfg": SceneEntityCfg("robot", body_names=["rh_p12_rn_base"])
+                "robot_cfg": SceneEntityCfg("robot"),
+                "object_cfg": SceneEntityCfg("pen"),
             }
         )
         
@@ -148,8 +147,6 @@ class RewardsCfg:
         }
     )
 
-    # 3. 동작 패널티 (너무 급하게 움직이면 감점)
-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.0001)
     
     # 4. 생존 보상
     alive = RewTerm(func=mdp.is_alive, weight=1.0)

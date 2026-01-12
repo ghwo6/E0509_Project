@@ -39,6 +39,26 @@ def ee_position(env: ManagerBasedRLEnv, robot_cfg: SceneEntityCfg) -> torch.Tens
 
 
 # =========================================================================
+# 1-2. [관측용] 물체(펜)의 위치를 알려주는 함수 (NEW)
+# =========================================================================
+def object_pos_rel(env: ManagerBasedRLEnv, robot_cfg: SceneEntityCfg, object_cfg: SceneEntityCfg) -> torch.Tensor:
+    """
+    로봇 베이스 기준, 목표물(펜)의 상대 위치를 계산합니다.
+    """
+    robot: Articulation = env.scene[robot_cfg.name]
+    pen: RigidObject = env.scene[object_cfg.name]
+
+    # 로봇 베이스 위치 (보통 (0,0,0)이지만, 멀티 GPU 학습시 월드 좌표는 다를 수 있음)
+    robot_base_pos = robot.data.root_pos_w
+    
+    # 펜의 위치
+    pen_pos = pen.data.root_pos_w
+    
+    # 상대 위치 반환
+    return pen_pos - robot_base_pos
+
+
+# =========================================================================
 # 2. [보상용] 거리 점수 (오프셋 적용됨)
 # =========================================================================
 def object_ee_distance(env: ManagerBasedRLEnv, robot_cfg: SceneEntityCfg, object_cfg: SceneEntityCfg) -> torch.Tensor:

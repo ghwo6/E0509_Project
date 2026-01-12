@@ -85,3 +85,30 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
         self.args = {
             "rsl_rl_cfg_entry_point": "isaaclab_tasks.manager_based.e0509_reach_pen_project.config.e0509.agents.rsl_rl_ppo_cfg:PPORunnerCfg" 
         }
+        # -----------------------------------------------------------------
+# 👇 맨 아래에 이 코드를 붙여넣으세요
+# -----------------------------------------------------------------
+
+@configclass
+class E0509ReachPenEnvCfg_v0(E0509ReachPenEnvCfg):
+    """
+    [Mode v0] Approach: 일단 펜 근처로 가는 것에 집중
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        # v0 전용 보상 설정 덮어쓰기
+        self.rewards.reaching_distance.weight = 15.0  # 거리 점수 팍 올림
+        self.rewards.reaching_orientation.weight = 0.0 # 방향 신경 꺼
+        self.rewards.action_rate.weight = -0.01       # 좀 떨어도 괜찮아
+
+@configclass
+class E0509ReachPenEnvCfg_v1(E0509ReachPenEnvCfg):
+    """
+    [Mode v1] Precision: 방향 맞추고 부드럽게 움직이기
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        # v1 전용 보상 설정 덮어쓰기
+        self.rewards.reaching_distance.weight = 10.0
+        self.rewards.reaching_orientation.weight = 5.0 # 방향 중요해
+        self.rewards.action_rate.weight = -0.1         # 얌전하게 움직여 (10배 강화)
