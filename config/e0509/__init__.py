@@ -7,12 +7,3 @@ from .env_cfg import E0509ReachPenEnvCfg, E0509ReachPenEnvCfg_v0, E0509ReachPenE
 from .agents.rsl_rl_ppo_cfg import PPORunnerCfg
 
 # 3. 체육관(Gym) 메뉴판에 정식 등록!
-gym.register(
-    id="Isaac-E0509-Reach-Pen",                 # 우리가 부를 이름 (주문명)
-    entry_point="isaaclab.envs:ManagerBasedRLEnv",  # Isaac Lab의 기본 구동기
-    disable_env_checker=True,
-    kwargs={
-        "env_cfg_entry_point": E0509ReachPenEnvCfg, # "이 메뉴는 이 레시피를 씁니다"
-        "rsl_rl_cfg_entry_point": PPORunnerCfg,      # "학습은 이렇게 시킵니다"
-    },
-)
