@@ -40,8 +40,8 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
                     joint_names_expr=[".*"],
                     # 1. Stiffness (P-Gain): 로봇을 지탱하는 힘
                     # 1은 너무 낮고, 800은 너무 높으니 '400'부터 시작해 봅니다.
-                    stiffness=200.0,
-                    damping=150.0,
+                    stiffness=400.0,
+                    damping=40.0,
                 ),
             },
         )

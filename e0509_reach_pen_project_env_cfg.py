@@ -149,7 +149,7 @@ class RewardsCfg:
     )
 
     # 3. 동작 패널티 (너무 급하게 움직이면 감점)
-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.05)
+    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.0001)
     
     # 4. 생존 보상
     alive = RewTerm(func=mdp.is_alive, weight=1.0)
