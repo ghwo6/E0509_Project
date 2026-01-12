@@ -12,7 +12,7 @@ from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.utils import configclass
 import isaaclab.sim as sim_utils
 import isaaclab.envs.mdp as mdp
-from . import mdp as local_mdp
+from . import mdp as local_mdp  # 방금 수정한 rewards.py를 불러옵니다
 
 @configclass
 class ReachPenSceneCfg(InteractiveSceneCfg):
@@ -34,18 +34,12 @@ class ReachPenSceneCfg(InteractiveSceneCfg):
     pen = RigidObjectCfg(
         prim_path="{ENV_REGEX_NS}/Pen",
         spawn=sim_utils.UsdFileCfg(
-            usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/pen.usd", 
-            # scale=(1.0, 1.0, 1.0),
+            usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/usd/pen.usd", 
             scale=(0.001, 0.001, 0.001),
-            
-            # ✅ [추가 1] 강제로 물리 속성(Rigid Body) 켜기
-            # 이걸 넣으면 USD 파일에 설정이 없어도 강제로 적용됩니다.
             rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                rigid_body_enabled=True, # "너는 이제부터 물체다!"
-                disable_gravity=False,   # 중력 적용 (떨어지게 함)
+                rigid_body_enabled=True,
+                disable_gravity=False,
             ),
-            
-            # ✅ [추가 2] 질량 부여 (펜이니까 가볍게 0.05kg)
             mass_props=sim_utils.MassPropertiesCfg(mass=0.05),
         ),
         init_state=RigidObjectCfg.InitialStateCfg(
@@ -60,18 +54,42 @@ class ReachPenSceneCfg(InteractiveSceneCfg):
 class ActionsCfg:
     pass
 
+# =========================================================
+# ✅ [핵심] 관측(Observation) 설정
+# =========================================================
 @configclass
 class ObservationsCfg:
     @configclass
     class PolicyCfg(ObsGroup):
+        # 1. 관절 각도
         joint_pos = ObsTerm(func=mdp.joint_pos_rel)
+        # 2. 관절 속도
         joint_vel = ObsTerm(func=mdp.joint_vel_rel)
+        
+        # 3. 펜의 위치 (로봇 기준)
+        object_position = ObsTerm(
+            func=mdp.object_pos_rel,
+            params={
+                "robot_cfg": SceneEntityCfg("robot"),
+                "object_cfg": SceneEntityCfg("pen"), 
+            }
+        )
+        
+        # 4. [NEW] 내 손끝(Sweet Spot)의 위치
+        # 이걸 추가하면 AI가 자기 손 위치를 훨씬 빨리 깨닫습니다!
+        ee_pos = ObsTerm(
+            func=local_mdp.ee_position,
+            params={
+                "robot_cfg": SceneEntityCfg("robot", body_names=["rh_p12_rn_base"])
+            }
+        )
         
         def __post_init__(self):
             self.enable_corruption = False
             self.concatenate_terms = True
 
     policy: PolicyCfg = PolicyCfg()
+
 
 @configclass
 class EventCfg:
@@ -90,32 +108,33 @@ class EventCfg:
 
 @configclass
 class RewardsCfg:
-    alive = RewTerm(func=mdp.is_alive, weight=1.0)
-    
+    # 1. 거리 보상 (가까우면 점수)
     reaching_distance = RewTerm(
         func=local_mdp.object_ee_distance,
         weight=10.0,
         params={
-            # ✅ [수정] body_ids -> body_names 로 변경! (이게 정답입니다)
-            "robot_cfg": SceneEntityCfg("robot", body_names=["gripper_rh_p12_rn_base"]), 
+            "robot_cfg": SceneEntityCfg("robot", body_names=["rh_p12_rn_base"]), 
             "object_cfg": SceneEntityCfg("pen")
         }
     )
 
+    # 2. 방향 보상 (마주 보면 점수)
     reaching_orientation = RewTerm(
         func=local_mdp.pen_orientation_reward,
         weight=5.0,
         params={
-            # ✅ [수정] 여기도 body_names로 변경!
-            "robot_cfg": SceneEntityCfg("robot", body_names=["gripper_rh_p12_rn_base"]),
+            "robot_cfg": SceneEntityCfg("robot", body_names=["rh_p12_rn_base"]),
             "object_cfg": SceneEntityCfg("pen")
         }
     )
 
+    # 3. 동작 패널티 (너무 급하게 움직이면 감점)
     action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.05)
+    
+    # 4. 생존 보상
+    alive = RewTerm(func=mdp.is_alive, weight=1.0)
 
     
-# ✅ 여기가 핵심입니다! (종료 조건 클래스)
 @configclass
 class TerminationsCfg:
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
@@ -128,7 +147,6 @@ class ReachPenEnvCfg(ManagerBasedRLEnvCfg):
     actions: ActionsCfg = ActionsCfg()
     events: EventCfg = EventCfg()
     rewards: RewardsCfg = RewardsCfg()
-    # ✅ 여기에 등록!
     terminations: TerminationsCfg = TerminationsCfg()
 
     def __post_init__(self):

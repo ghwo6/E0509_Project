@@ -13,7 +13,7 @@ from isaaclab_tasks.manager_based.e0509_reach_pen_project.e0509_reach_pen_projec
 class E0509ReachPenEnvCfg(ReachPenEnvCfg):
     def __post_init__(self):
         super().__post_init__()
-        
+        self.episode_length_s = 5.0  # (단위: 초) 5초면 팔 뻗기에 충분합니다.
         # =========================================================
         # 1. 로봇 설정 (경로 수정 완료!)
         # =========================================================
@@ -21,7 +21,7 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
             prim_path="{ENV_REGEX_NS}/Robot",
             spawn=sim_utils.UsdFileCfg(
                 # ✅ [수정] 옮기신 '평탄화(Flatten)'된 파일 경로
-                usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/usd/e0509_flat.usd",
+                usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/usd/e0509.usd",
                 activate_contact_sensors=False,
             ),
             init_state=ArticulationCfg.InitialStateCfg(
