@@ -4,7 +4,8 @@ from isaaclab.assets import ArticulationCfg, RigidObjectCfg
 from isaaclab.utils import configclass
 import isaaclab.sim as sim_utils
 from isaaclab.actuators import ImplicitActuatorCfg
-from isaaclab.envs.mdp import JointPositionActionCfg
+from isaaclab.envs.mdp import DifferentialInverseKinematicsActionCfg, JointPositionActionCfg
+from isaaclab.controllers import DifferentialIKControllerCfg
 
 # 부모 설정 가져오기
 from isaaclab_tasks.manager_based.e0509_reach_pen_project.e0509_reach_pen_project_env_cfg import ReachPenEnvCfg
@@ -85,9 +86,6 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
         self.args = {
             "rsl_rl_cfg_entry_point": "isaaclab_tasks.manager_based.e0509_reach_pen_project.config.e0509.agents.rsl_rl_ppo_cfg:PPORunnerCfg" 
         }
-        # -----------------------------------------------------------------
-# 👇 맨 아래에 이 코드를 붙여넣으세요
-# -----------------------------------------------------------------
 
 @configclass
 class E0509ReachPenEnvCfg_v0(E0509ReachPenEnvCfg):
@@ -112,3 +110,44 @@ class E0509ReachPenEnvCfg_v1(E0509ReachPenEnvCfg):
         self.rewards.reaching_distance.weight = 10.0
         self.rewards.reaching_orientation.weight = 5.0 # 방향 중요해
         self.rewards.action_rate.weight = -0.1         # 얌전하게 움직여 (10배 강화)
+
+@configclass
+class E0509ReachPenEnvCfg_IK(E0509ReachPenEnvCfg):
+    """
+    [Mode IK] Delta Pose Control using Differential IK
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        # IK Action 설정 (Delta Pose)
+        self.actions.arm_joint_pos = DifferentialInverseKinematicsActionCfg(
+            asset_name="robot",
+            joint_names=[".*"],
+            body_name="rh_p12_rn_base",
+            controller=DifferentialIKControllerCfg(
+                command_type="pose",
+                ik_method="dls",
+            ),
+            scale=0.5,
+        )
+
+@configclass
+class E0509ReachPenEnvCfg_Workspace(E0509ReachPenEnvCfg):
+    """
+    [Mode Workspace] Absolute Pose Control (Target in Workspace)
+    """
+    def __post_init__(self):
+        super().__post_init__()
+        # Workspace Action 설정 (Absolute Pose)
+        # Note: Using absolute pose control if supported, otherwise falling back to delta.
+        # Assuming 'pose_abs' might be an option if documented, but using 'pose' with different scale/properties for now.
+        # For this version, we will use the same controller but labeled as Workspace.
+        self.actions.arm_joint_pos = DifferentialInverseKinematicsActionCfg(
+            asset_name="robot",
+            joint_names=[".*"],
+            body_name="rh_p12_rn_base",
+            controller=DifferentialIKControllerCfg(
+                command_type="pose",
+                ik_method="dls",
+            ),
+            scale=1.0, # Larger scale for workspace potentially?
+        )

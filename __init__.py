@@ -28,3 +28,27 @@ if "Isaac-E0509-Reach-Pen-v1" not in gym.envs.registry:
             "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
         },
     )
+
+# IK Mode 등록 (Delta Controller)
+if "Isaac-E0509-Reach-Pen-IK-v0" not in gym.envs.registry:
+    gym.register(
+        id="Isaac-E0509-Reach-Pen-IK-v0",
+        entry_point="isaaclab.envs:ManagerBasedRLEnv",
+        disable_env_checker=True,
+        kwargs={
+            "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_IK,
+            "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
+        },
+    )
+
+# Workspace Mode 등록 (Absolute/Workspace Controller)
+if "Isaac-E0509-Reach-Pen-Workspace-v0" not in gym.envs.registry:
+    gym.register(
+        id="Isaac-E0509-Reach-Pen-Workspace-v0",
+        entry_point="isaaclab.envs:ManagerBasedRLEnv",
+        disable_env_checker=True,
+        kwargs={
+            "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_Workspace,
+            "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
+        },
+    )
