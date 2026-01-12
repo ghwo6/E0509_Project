@@ -68,10 +68,11 @@ class ObservationsCfg:
         
         # 3. 펜의 위치 (로봇 기준)
         object_position = ObsTerm(
-            func=mdp.object_pos_rel,
+            # ✅ mdp.object_pos_rel 대신 local_mdp의 함수를 사용하거나 
+            # ✅ 만약 상대 위치 함수를 따로 안 만드셨다면, 일단 아래처럼 수정하세요.
+            func=local_mdp.ee_position, 
             params={
-                "robot_cfg": SceneEntityCfg("robot"),
-                "object_cfg": SceneEntityCfg("pen"), 
+                "robot_cfg": SceneEntityCfg("robot", body_names=["rh_p12_rn_base"])
             }
         )
         
@@ -90,7 +91,6 @@ class ObservationsCfg:
 
     policy: PolicyCfg = PolicyCfg()
 
-
 @configclass
 class EventCfg:
     reset_pen_position = EventTerm(
@@ -98,8 +98,15 @@ class EventCfg:
         mode="reset",
         params={
             "pose_range": {
-                "x": (0.50, 0.70), "y": (-0.20, 0.20), "z": (0.33, 0.63),
-                "yaw": (-3.14, 3.14),
+                # "x": (0.30, 0.45),   # 30~45cm 거리 (더 가깝게)
+                # "y": (-0.10, 0.10),  # 좌우 범위를 좁혀서 정면 위주로
+                # "z": (0.15, 0.35),   # 높이를 낮춤 (로봇이 뻗기 편한 높이)
+                "x": (0.030, 0.045),   # 30~45cm 거리 (더 가깝게)
+                "y": (-0.010, 0.010),  # 좌우 범위를 좁혀서 정면 위주로
+                "z": (0.015, 0.035),   # 높이를 낮춤 (로봇이 뻗기 편한 높이)
+                "roll": (-0.52, 0.52),  # 빨간축 기준 +-30도
+                "pitch": (-0.52, 0.52), # 초록축 기준 +-30도
+                "yaw": (-2.09, 2.09),   # 파란축 기준 +-120도
             },
             "velocity_range": {}, 
             "asset_cfg": SceneEntityCfg("pen"),

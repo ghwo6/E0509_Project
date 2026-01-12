@@ -20,7 +20,6 @@ class E0509ReachPenEnvCfg(ReachPenEnvCfg):
         self.scene.robot = ArticulationCfg(
             prim_path="{ENV_REGEX_NS}/Robot",
             spawn=sim_utils.UsdFileCfg(
-                # ✅ [수정] 옮기신 '평탄화(Flatten)'된 파일 경로
                 usd_path="/workspace/isaaclab/source/isaaclab_tasks/isaaclab_tasks/manager_based/e0509_reach_pen_project/usd/e0509.usd",
                 activate_contact_sensors=False,
             ),
