@@ -14,8 +14,8 @@ gym.register(
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{e0509.__name__}:E0509ReachPenEnvCfg_v0",
-        "rsl_rl_cfg_entry_point": agents.rsl_rl_cfg.Isaac_E0509_Reach_Pen_PPO_Cfg,
+        "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_v0,
+        "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
     },
 )
 
@@ -27,7 +27,7 @@ gym.register(
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{e0509.__name__}:E0509ReachPenEnvCfg_v1",
-        "rsl_rl_cfg_entry_point": agents.rsl_rl_cfg.Isaac_E0509_Reach_Pen_PPO_Cfg,
+        "env_cfg_entry_point": e0509.E0509ReachPenEnvCfg_v1,
+        "rsl_rl_cfg_entry_point": e0509.PPORunnerCfg,
     },
 )
